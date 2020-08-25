@@ -1,14 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
 import './index.css';
-import App from './app';
+import Mainpage from './mainpage';
+import CorsExperiment from './CorsExperiment';
 
 ReactDOM.render(
-    <React.StrictMode>
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>
-    </React.StrictMode>,
+    <Mainpage />,
     document.getElementById('root')
 )

@@ -6,7 +6,6 @@ const App = () => {
     return (
         <Switch>
             <Route exact path="/" component={Mainpage} />
-            <Route exact path="/anothermain" component={Mainpage} />
         </Switch>
     )
 };
