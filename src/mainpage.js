@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 
 const Mainpage = () => {
+    let [id, setId] = useState(1);
     let [todoList, setTodoList] = useState([]);
     let [todo, setTodo] = useState();
-    let [todel, setTodel] = useState('');
+    let [IdforDel, setIdforDel] = useState(0);
 
     const addHandler = (e) => {
         // send a post request to the server from here!
@@ -11,9 +12,11 @@ const Mainpage = () => {
         if (todo === undefined) {
             alert("You forget to input sth!");
         } else {
-            setTodoList(currentTodo => [...currentTodo, todo]);
+            setId(id + 1);
+            setTodoList(currentTodo => [...currentTodo, {todoId: id, todoContent: todo}]);
             // alert(`Your current todo is ${todo}`);
             setTodo('');
+            setIdforDel(id);
             fetch('/', {
                 method: 'POST',
                 headers: new Headers({
@@ -21,6 +24,7 @@ const Mainpage = () => {
                     'Content-Type': 'application/json',
                 }),
                 body: JSON.stringify({
+                    itemId : id,
                     toAdd : todo,
                 })
             }).then(res => res.json())
@@ -36,40 +40,97 @@ const Mainpage = () => {
     const delHandler = (e) => {
         // send a delete request to the server
         e.preventDefault(); // Do not forget this!
-        alert(`You want to delete item number ${todel}`);
+        let content;
+        for (let i = 0; i < todoList.length; i++) {
+            if (todoList[i].todoId === parseInt(IdforDel)) {
+                content = todoList[i].todoContent;
+                break;
+            }
+        }
+        if (window.confirm(`Do you want to delete "${content}"`)) {
+            setTodoList(todoList.filter(singleTodo => {
+                return singleTodo.todoId != IdforDel;
+            }));
+            setIdforDel(0);
+            fetch('/', {
+                method: 'DELETE',
+                headers: new Headers({
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                }),
+                body: JSON.stringify({
+                    itemToDelete: IdforDel,
+                })
+            }).then(res => res.json())
+            .then(jsonRes => console.log(jsonRes))
+            .catch(err => console.log(err))
+        }
     };
 
     const delWholeHandler = () => {
         // send a delete request to the server
-        alert("You want to delete your whole list");
+        setTodoList([]);
+        // send a delete request
+        setIdforDel(0);
+        fetch('/', {
+            method: 'DELETE',
+            headers: new Headers({
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }),
+            body: JSON.stringify({
+                itemToDelete: "Whole list",
+            })
+        }).then(res => res.json())
+        .then(jsonRes => {
+            console.log(jsonRes.message);
+        })
+        .catch(err => {
+            console.log(err);
+        })
     };
 
     return (
         <div className="mainpage-container" id="mainpage-container-id">
             <div>YOUR TO DO LIST</div>
-            { todoList.length !== 0 && todoList[0] !== undefined
+            { todoList.length !== 0 && todoList[0].todoContent !== undefined
                 ? todoList.map(singleTodo => {
                 return (
-                    <div>{singleTodo}</div>
+                    <div>{singleTodo.todoContent}</div>
                 )})
                 : <div>Nothing yet!</div>
             }
-            <div className="add-item-container">To add items
-                <form onSubmit={addHandler}>
-                    <input type="text" placeholder="Add your todo" value={todo} onChange={e => setTodo(e.target.value)} />
+            <form className="add-item-container" onSubmit={addHandler}>
+                <label>To add items
+                    <input type="text" placeholder="Add your todo" value={todo} 
+                        onChange={e => setTodo(e.target.value)} />
                     <input type="submit" value="ADD"/>
-                </form>
-            </div>
-            <div className="delete-item-container">To delete items
-                <form onSubmit={delHandler}>
-                    <input type="number" placeholder="What item do you want to delete ?" 
-                        value={todel} onChange={e => setTodel(e.target.value)} />
-                    <input type="submit" value="DELETE ITEM"  />
-                </form>
-            </div>
-            <div className="delete-entire-list">To delete entire list
-                <button onClick={delWholeHandler}>DELETE WHOLE LIST</button>
-            </div>
+                </label>
+            </form>
+
+            <form className="delete-item-container" onSubmit={delHandler}>
+                <label>To delete items
+                    <select value={IdforDel} onChange={e => setIdforDel(e.target.value)}>
+                        <option value='0' disabled>Select an item</option>
+                        {todoList.map(singleTodo => {
+                            return (
+                                <option value={singleTodo.todoId}>{singleTodo.todoContent}</option>
+                            )
+                        })}
+                    </select>
+                    <input type="submit" value="DELETE ITEM"/>
+                </label>
+            </form>
+
+            <form className="delete-entire-list" onSubmit={() => {
+                        if (window.confirm("Do you want to delete the whole list?")) {
+                            delWholeHandler();
+                        }
+                    }}>
+                <label>To delete entire list
+                    <input type="submit" value="DELETE WHOLE LIST" />
+                </label> 
+            </form>
         </div>
     )
 };
