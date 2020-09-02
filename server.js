@@ -15,13 +15,23 @@ app.post('/', (req, res) => {
     res.json(req.body.toAdd);
 });
 
+app.put('/', (req, res) => {
+    console.log("PUT request");
+    let updateId = parseInt(req.body.itemToUpdateId);
+    let updateContent = req.body.itemToUpdateContent;
+    let index = listItems.findIndex(item => item[0] === updateId);
+    listItems[index] = [updateId, updateContent];
+    console.log(`listItems are ${listItems.join(" | ")}`);
+    res.json(updateContent);
+})
+
 app.delete('/', (req, res) => {
     console.log("DELETE request");
     if (req.body.itemToDelete === "Whole list") {
         listItems = [];
     } else {
         listItems = listItems.filter(singleItem => {
-            return singleItem[0] != req.body.itemToDelete;
+            return singleItem[0] !== parseInt(req.body.itemToDelete);
         })
     }
     console.log(`listItems are ${listItems.join(" | ")}`);
