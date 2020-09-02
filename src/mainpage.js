@@ -89,11 +89,17 @@ const Mainpage = () => {
 
     const delWholeHandler = () => {
         // send a delete request to the server
-        setTodoList([]);
-        // send a delete request
-        setIdforDel(0);
-        let requestBody = { itemToDelete: "Whole list"};
-        sendRequest('DELETE', requestBody);
+        if (todoList.length > 0) {
+            if (window.confirm("Do you want to delete the whole list?")) {
+                setTodoList([]);
+                // send a delete request
+                setIdforDel(0);
+                let requestBody = { itemToDelete: "Whole list"};
+                sendRequest('DELETE', requestBody);
+            }
+        } else {
+            alert("The list is already empty");
+        }
     };
 
     return (
@@ -144,11 +150,7 @@ const Mainpage = () => {
                 </label>
             </form>
 
-            <form className="delete-entire-list" onSubmit={() => {
-                        if (window.confirm("Do you want to delete the whole list?")) {
-                            delWholeHandler();
-                        }
-                    }}>
+            <form className="delete-entire-list" onSubmit={delWholeHandler}>
                 <label>To delete entire list
                     <input type="submit" value="DELETE WHOLE LIST" />
                 </label> 
