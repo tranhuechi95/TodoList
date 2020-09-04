@@ -1,12 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Mainpage = () => {
     let [id, setId] = useState(1);
     let [todoList, setTodoList] = useState([]);
     let [todo, setTodo] = useState('');
-    let [IdforDel, setIdforDel] = useState(0);
+    let [IdforDel, setIdforDel] = useState(-1);
     let [toUpdateContent, setToUpdateContent] = useState('');
-    let [IdforUpdate, setIdforUpdate] = useState(0);
+    let [IdforUpdate, setIdforUpdate] = useState(-1);
+
+    // get the initial state
+    useEffect(() => {
+        fetch('/initial', {
+            method: 'GET',
+        }).then(res => res.json())
+        .then(jsonRes => {
+            console.log(jsonRes);
+            let newList = [];
+            let maxId = 0;
+            for (let item of jsonRes) {
+                newList.push({todoId: item._id, todoContent: item.toAdd});
+                maxId = Math.max(maxId, parseInt(item._id));
+            }
+            setId(maxId + 1);
+            console.log(newList[0].todoId);
+            setIdforDel(newList[0].todoId);
+            setIdforUpdate(newList[0].todoId);
+            setTodoList(newList);
+        })
+        .catch(err => console.log(err))
+    }, []);
 
     const sendRequest = (sendMethod, sendBody) => {
         fetch('/', {
@@ -18,8 +40,8 @@ const Mainpage = () => {
             body: JSON.stringify(
                 sendBody
             )
-        }).then(res => res.json())
-        .then(jsonRes => console.log(jsonRes))
+        }).then(res => res.text())
+        .then(textRes => console.log(textRes))
         .catch(err => console.log(err));
     }
 
@@ -29,12 +51,14 @@ const Mainpage = () => {
         if (todo === '') {
             alert("You forget to input sth!");
         } else {
-            setId(id + 1);
-            setTodoList(currentTodo => [...currentTodo, {todoId: id, todoContent: todo}]);
-            setTodo('');
-            setIdforDel(id);
-            let requestBody = {itemId: id, toAdd: todo };
+            // let currentId = Math.floor(Math.random() * 100000);
+            setId(id + 1); // increase the id
+            let requestBody = { _id: id, toAdd: todo };
             sendRequest('POST', requestBody);
+            setTodoList(currentTodo => [...currentTodo, {todoId: id, todoContent: todo}]);
+            setIdforDel(id);
+            setIdforUpdate(id);
+            setTodo('');
         }
     };
 
@@ -43,21 +67,23 @@ const Mainpage = () => {
         if (toUpdateContent === '') {
             alert("You forget update content!");
         } else {
-            if (IdforUpdate === 0) {
+            if (IdforUpdate === -1) {
                 alert("You forget to choose an item to update!");
             } else {
                 // do the update here!
+                console.log(todoList[0].todoId);
+                console.log(IdforUpdate);
                 let itemToUpdate = todoList.find(singleTodo => singleTodo.todoId === parseInt(IdforUpdate));
                 if (window.confirm(`You want to update "${itemToUpdate.todoContent}" with "${toUpdateContent}" ?`)) {
-                    const newTodoList = todoList.map(singletodo => singletodo.todoId === parseInt(IdforUpdate)
+                    const newTodoList = todoList.map(singletodo => singletodo.todoId == IdforUpdate
                     ? {...singletodo, todoContent: toUpdateContent}
                     : singletodo);
-                    setTodoList(newTodoList);
-                    setIdforDel(0);
-                    setToUpdateContent('');
                     // send a put request here
                     let requestBody = { itemToUpdateId: IdforUpdate, itemToUpdateContent: toUpdateContent };
                     sendRequest('PUT', requestBody);
+                    setTodoList(newTodoList);
+                    setIdforUpdate(-1);
+                    setToUpdateContent('');
                 }
             }
         }
@@ -78,11 +104,11 @@ const Mainpage = () => {
         } else {
             if (content !== undefined && window.confirm(`Do you want to delete "${content}"`)) {
                 setTodoList(todoList.filter(singleTodo => {
-                    return singleTodo.todoId != IdforDel;
+                    return singleTodo.todoId !== parseInt(IdforDel);
                 }));
-                setIdforDel(0);
                 let requestBody = { itemToDelete: IdforDel };
                 sendRequest('DELETE', requestBody);
+                setIdforDel(-1);
             }
         } 
     };
@@ -93,7 +119,7 @@ const Mainpage = () => {
             if (window.confirm("Do you want to delete the whole list?")) {
                 setTodoList([]);
                 // send a delete request
-                setIdforDel(0);
+                setIdforDel(-1);
                 let requestBody = { itemToDelete: "Whole list"};
                 sendRequest('DELETE', requestBody);
             }
