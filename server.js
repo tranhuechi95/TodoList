@@ -116,11 +116,12 @@ app.delete('/', (req, res) => {
     }  
 })
 
-/* mongoClient.connect((err) => {
+mongoClient.connect((err) => {
     if (err) {
-        mongoClient.close();
+        console.log("[MongoDB] Mongo client could not connect to DB server: " + err);
     } else {
         db = mongoClient.db(dbName);
+        collection = db.collection('test');
         app.listen(port, (err) => {
             if (err) {
                 console.log("Node server cannot start: " + err);
@@ -128,27 +129,5 @@ app.delete('/', (req, res) => {
                 console.log(`server ready on http://localhost:${port}`);
             }
         });
-        console.log("The app is still alive");
-        mongoClient.close();
-    }
-}) */
-
-app.listen(port, err => {
-    if (err) console.log(err);
-    else {
-        console.log(`server ready on http://localhost:${port}`);
-        mongoClient.connect(err => {
-            if (err) {
-                console.log("Cannot connect to mongoDB server!");
-                res.send("Failure to connect to DB");
-            } else {
-                db = mongoClient.db(dbName);
-                collection = db.collection('test');
-                // collection.find({}).toArray(function(err, result) {
-                //     if (err) console.log(err);
-                //     console.log(result);
-                // });
-            }
-        })
     }
 });
