@@ -1,68 +1,30 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was my practice with REST API and usage of No SQL database.
 
-## Available Scripts
+## To start
 
-In the project directory, you can run:
+1) Download this repository to your computer.
 
-### `yarn start`
+2) Install the necessary dependencies using `npm install`.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+3) Build the website with `npm run build`.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+4) Start the website at [http://localhost:3000](http://localhost:3000) by running `npm run start`.
 
-### `yarn test`
+### Personal learning point
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1) To implement the server to receive the request from the client side, I need to make it the same process. i.e same port. Otherwise, we will not be able to view the request content (non-cors)
 
-### `yarn build`
+2) To make both server and client to have the same process, the GET api of the server will serve the React front end part. We need to build the website first with `npm run build` first to convert the React front end into javascript  (jsx -> js). Here, we add `app.use(express.static("build"))` to the server.js file so that the GET method will render the web app from build folder.
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+3) The todoList is implemented as an array. As such, to handle update, delete functions, I made use of filter and map functions of array. On server side, the listItems is implemented as an array too.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+4) To make sure the `update` and `delete` selection are updated when there is only one choice to select, I need to set the state of Id to select/delete to the added item so that it does not stay with the initial state.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+5) For the MongoDB database, I need to make sure the web app is `in sync` with the db. This is done with the `useEffect` hook. When the web app is first loaded, the web app `fetch` the data from the db and set the todoList in the web app.
 
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+6) For update and delete of the MongoDB, I used the Id in the db for those purpose. However, I encountered the problem of which id to be used? Should I use the db generated `_id` (unique) or my own `id`.
+  a) For the db generated `_id`, its data type is Object. Hence, when the Update/Delete Id, which has String data type, is passed into the Update and Delete function of db, it won't match. So the data was not updated or deleted. Hence, I cannot use `_id` by db!
+  b) For my own `id`, there were a few options to generate the unique id. One is to use Math.random(), two is to use Date() and three is to use id with `+1` increment.
+  For One, I cannot guarantee that the generated `id` is random
+  For Two, the `id` store in the db and the `id` recorded in Update/Delete id are of different forms. This leads to the same problem as a).
+  For Three, I get maximum `id` during the initial fetching in 5). With this maximum `id`, any subsequent items added will have `id` larger than the maximum `id` (max id ++). This ensure that the `id` will be unique.
