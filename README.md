@@ -16,7 +16,7 @@ This project was my practice with REST API and usage of No SQL database.
 
 2) To make both server and client to have the same process, the GET api of the server will serve the React front end part. We need to build the website first with `npm run build` first to convert the React front end into javascript  (jsx -> js). Here, we add `app.use(express.static("build"))` to the server.js file so that the GET method will render the web app from build folder.
 
-3) The todoList is implemented as an array. As such, to handle update, delete functions, I made use of filter and map functions of array. On server side, the listItems is implemented as an array too.
+3) The todoList is implemented as an `array`. As such, to handle update, delete functions, I made use of `filter` and `map` functions of array. On server side, the listItems is implemented as an `array` too.
 
 4) To make sure the `update` and `delete` selection are updated when there is only one choice to select, I need to set the state of Id to select/delete to the added item so that it does not stay with the initial state.
 
