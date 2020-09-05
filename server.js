@@ -28,13 +28,18 @@ app.get('/initial', (req, res) => {
 
 app.post('/', (req, res) => {
     console.log("POST request");
-    // console.log(`id to add is ${req.body._id}`);
     collection.insertOne(req.body, (err, result) => {
         if (err) {
             console.log("Error during insertion " + err);
             res.send("Failed to insert into DB");
         } else {
             console.log("Insertion succeeds");
+            collection.find({}).toArray(function(err, result) {
+                if (err)
+                    console.log(err);
+                else
+                    console.log(result);
+            });
             listItems.push({itemId: result.insertedId, itemContent: req.body.toAdd});
             // for (let item of listItems) {
             //     console.log(item);
@@ -42,11 +47,6 @@ app.post('/', (req, res) => {
             res.send("Insertion succeeds");
         }
     })
-    // console.log(`listItems are ${listItems.join(" | ")}`);
-    collection.find({}).toArray(function(err, result) {
-        if (err) console.log(err);
-        console.log(result);
-    });
 });
 
 app.put('/', (req, res) => {
@@ -69,13 +69,15 @@ app.put('/', (req, res) => {
             res.send("Failed to update from DB");
         } else {
             console.log("Update succeeds");
+            collection.find({}).toArray(function(err, result) {
+                if (err)
+                    console.log(err);
+                else
+                    console.log(result);
+            });
             res.send("Update succeeds");
         }
     })
-    collection.find({}).toArray(function(err, result) {
-        if (err) console.log(err);
-        console.log(result);
-    });
 })
 
 app.delete('/', (req, res) => {
@@ -106,21 +108,22 @@ app.delete('/', (req, res) => {
                 res.send("Failed to delete from DB");
             } else {
                 console.log("Deletion succeeds");
+                collection.find({}).toArray(function(err, result) {
+                    if (err) console.log(err);
+                    console.log(result);
+                });
                 res.send("Deletion succeeds");
             }
         })
-        collection.find({}).toArray(function(err, result) {
-            if (err) console.log(err);
-            console.log(result);
-        });
     }  
 })
 
-/* mongoClient.connect((err) => {
+mongoClient.connect((err) => {
     if (err) {
-        mongoClient.close();
+        console.log("[MongoDB] Mongo client could not connect to DB server: " + err);
     } else {
         db = mongoClient.db(dbName);
+        collection = db.collection('test');
         app.listen(port, (err) => {
             if (err) {
                 console.log("Node server cannot start: " + err);
@@ -128,27 +131,5 @@ app.delete('/', (req, res) => {
                 console.log(`server ready on http://localhost:${port}`);
             }
         });
-        console.log("The app is still alive");
-        mongoClient.close();
-    }
-}) */
-
-app.listen(port, err => {
-    if (err) console.log(err);
-    else {
-        console.log(`server ready on http://localhost:${port}`);
-        mongoClient.connect(err => {
-            if (err) {
-                console.log("Cannot connect to mongoDB server!");
-                res.send("Failure to connect to DB");
-            } else {
-                db = mongoClient.db(dbName);
-                collection = db.collection('test');
-                // collection.find({}).toArray(function(err, result) {
-                //     if (err) console.log(err);
-                //     console.log(result);
-                // });
-            }
-        })
     }
 });
