@@ -13,3 +13,8 @@ body {
 #mainpage-container-id > * {
     margin: 5px;
 }
+
+.form-input > * {
+    display: block;
+    margin: 10px;
+}

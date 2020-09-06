@@ -13,8 +13,91 @@ const mongoClient = new MongoClient(url);
 let db;
 let collection;
 
-app.get('/initial', (req, res) => {
-    console.log("GET request");
+/* FOR INITIAL CONNECTION TO DB */
+mongoClient.connect((err) => {
+    if (err) {
+        console.log("[MongoDB] Mongo client could not connect to DB server: " + err);
+    } else {
+        db = mongoClient.db(dbName);
+        // later, we will need to assign collection base on the user login
+        app.listen(port, (err) => {
+            if (err) {
+                console.log("Node server cannot start: " + err);
+            } else {
+                console.log(`server ready on http://localhost:${port}`);
+            }
+        });
+    }
+});
+
+/*  FOR LOGIN AND SIGNUP */
+/* for login, there are a few things to consider
+1) Whether the username exist
+    if yes, does the password match?
+    else, return a response that "Need to signup"    
+*/
+app.post('/login', (req, res) => {
+    console.log("LOGIN request");
+    collection = db.collection('userCollection');
+    collection.find({username: {$eq: req.body.loginUsername}}).toArray(function(err, result) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(result);
+            if (result.length === 0) {
+                console.log("User does not exists");
+                res.send("Username does not exists");
+            } else {
+                // need to check whether password match?
+                if (result[0].password === req.body.loginPassword) {
+                    console.log("Correct password");
+                    res.send("Valid username");
+                } else {
+                    console.log("Wrong password");
+                    res.send("Your password is wrong");
+                }
+            }
+        }
+    });
+})
+
+/* for signup, these are the points to consider
+1) Whether the username alr exists?
+    if yes, return a responst that "user need to choose another username"
+    if no, add the signup info into the collection, res stt is successful
+*/
+app.post('/signup', (req, res) => {
+    console.log("SIGNUP request");
+    collection = db.collection('userCollection');
+    collection.find({username: {$eq: req.body.signupUsername}}).toArray(function(err, result) {
+        if (err) console.log(err);
+        console.log(result);
+        if (result.length === 0) {
+            collection.insertOne({username: req.body.signupUsername, password: req.body.signupPassword},
+                (err, result)=> {
+                    if (err) {
+                        console.log("Error duing insertion " + err);
+                        res.send("Failed to signup!");
+                    } else {
+                        console.log("Signup succeeds");
+                        res.send("Signup is successful");
+                    }
+                })
+        } else {
+            // username alr exists
+            res.send("Username already exists");
+        }
+    })
+    // console.log(`Username is ${req.body.signupUsername}`);
+    // res.send("Signup is successful");
+})
+
+/* FOR HANDLING ADDITION TO LIST */
+
+app.post('/initial', (req, res) => {
+    console.log("INITIAL POST request");
+    let currentUsername = req.body.currentUser;
+    collection = db.collection(currentUsername);
     collection.find({}).toArray(function(err, result) {
         if (err) console.log(err);
         console.log(result);
@@ -26,9 +109,11 @@ app.get('/initial', (req, res) => {
     });
 })
 
-app.post('/', (req, res) => {
+app.post('/todolist', (req, res) => {
     console.log("POST request");
-    collection.insertOne(req.body, (err, result) => {
+    let currentUsername = req.body.currentUser;
+    collection = db.collection(currentUsername);
+    collection.insertOne({_id: req.body._id, toAdd: req.body.toAdd}, (err, result) => {
         if (err) {
             console.log("Error during insertion " + err);
             res.send("Failed to insert into DB");
@@ -49,8 +134,9 @@ app.post('/', (req, res) => {
     })
 });
 
-app.put('/', (req, res) => {
+app.put('/todolist', (req, res) => {
     console.log("PUT request");
+    let currentUsername = req.body.currentUser;
     let updateId = req.body.itemToUpdateId;
     let updateContent = req.body.itemToUpdateContent;
     
@@ -62,7 +148,7 @@ app.put('/', (req, res) => {
     // for (let item of listItems) {
     //     console.log(item);
     // }
-
+    collection = db.collection(currentUsername);
     collection.updateOne({_id : {$eq: parseInt(updateId)}}, {$set: {toAdd: req.body.itemToUpdateContent}}, (err, result) => {
         if (err) {
             console.log("Error during update " + err);
@@ -80,8 +166,10 @@ app.put('/', (req, res) => {
     })
 })
 
-app.delete('/', (req, res) => {
+app.delete('/todolist', (req, res) => {
     console.log("DELETE request");
+    let currentUsername = req.body.currentUser;
+    collection = db.collection(currentUsername);
     if (req.body.itemToDelete === "Whole list") {
         listItems = [];
         console.log(`listItems are ${listItems.join(" | ")}`);
@@ -117,19 +205,3 @@ app.delete('/', (req, res) => {
         })
     }  
 })
-
-mongoClient.connect((err) => {
-    if (err) {
-        console.log("[MongoDB] Mongo client could not connect to DB server: " + err);
-    } else {
-        db = mongoClient.db(dbName);
-        collection = db.collection('test');
-        app.listen(port, (err) => {
-            if (err) {
-                console.log("Node server cannot start: " + err);
-            } else {
-                console.log(`server ready on http://localhost:${port}`);
-            }
-        });
-    }
-});
