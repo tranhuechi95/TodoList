@@ -33,3 +33,21 @@ This project was my practice with REST API and usage of No SQL database.
   For Two, the `id` store in the db and the `id` recorded in Update/Delete id are of different forms. This leads to the same problem as a).
   
   For Three, I get maximum `id` during the initial fetching in 5). With this maximum `id`, any subsequent items added will have `id` larger than the maximum `id` (max id ++). This ensure that the `id` will be unique. By using the `<form>` tag in React, the Update/Delete id is in `string` data type. As such, before passing to the db for update/delete or for client side update/delete using `map/filter`, I need to `parseInt` the `id` first.
+  
+7) The second phase of this project was to implement login/signup capability i.e. user authentification. For this purpose, I created a login/signup page as the `/` page, user can only access his/her `todolist` after successful login.
+
+8) For login/signup page, I did some error checking on client side as well as server side with database.
+
+a) For client side, on signup, the initial and retyped password must match. TO FOLLOW UP: i would want to implement further checking on no `whitespace` in username or password; password must be at least 8 chars, alphanumeric.
+
+b) For server side, on signup, I do not allow duplicate username. This was done by checking whether the username provided by user was already inside the db.
+For login, I checked whether the username provided already exists in db. If it doesn't, I would prompt the user to signup. As for existing usernme, I would check whether the password matches. TO FOLLOW UP: I would want to hash the password and compare the hashed password with the one (hashed) stored in the db.
+
+9) After the user has successfully logged in, the web app would automatically directs the user to their own todolist with the link `/todolist/:username`. This was done using `useHistory
+
+```
+  let history = useHistory();
+  history.push(`/todolist/${loginInputUsername}`);  
+  
+```
+10) Each user's todolist is store in the db as a collection with his/her username as collection's name. I retrieve the `username` from the link path through `{match}` in the link with `let {params: {username}} = match`. With this, the variable `username` will store the user's username. Using this `username`, I can pass it during add, update, delete requests to the server.
