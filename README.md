@@ -48,6 +48,5 @@ For login, I checked whether the username provided already exists in db. If it d
 ```
   let history = useHistory();
   history.push(`/todolist/${loginInputUsername}`);  
-  
 ```
 10) Each user's todolist is store in the db as a collection with his/her username as collection's name. I retrieve the `username` from the link path through `{match}` in the link with `let {params: {username}} = match`. With this, the variable `username` will store the user's username. Using this `username`, I can pass it during add, update, delete requests to the server.
