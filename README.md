@@ -41,7 +41,7 @@ This project was my practice with REST API and usage of No SQL database.
 a) For client side, on signup, the initial and retyped password must match. TO FOLLOW UP: i would want to implement further checking on no `whitespace` in username or password; password must be at least 8 chars, alphanumeric.
 
 b) For server side, on signup, I do not allow duplicate username. This was done by checking whether the username provided by user was already inside the db.
-For login, I checked whether the username provided already exists in db. If it doesn't, I would prompt the user to signup. As for existing usernme, I would check whether the password matches. TO FOLLOW UP: I would want to hash the password and compare the hashed password with the one (hashed) stored in the db. Try `bcrypt`?.
+For login, I checked whether the username provided already exists in db. If it doesn't, I would prompt the user to signup. As for existing usernme, I would check whether the password matches. TO FOLLOW UP: I would want to hash the password and compare the hashed password with the one (hashed) stored in the db. Try `bcrypt`?. `https://github.com/kelektiv/node.bcrypt.js`.
 
 9) After the user has successfully logged in, the web app would automatically directs the user to their own todolist with the link `/todolist/:username`. This was done using `useHistory`
 
