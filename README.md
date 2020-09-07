@@ -41,7 +41,7 @@ This project was my practice with REST API and usage of No SQL database.
 a) For client side, on signup, the initial and retyped password must match. TO FOLLOW UP: i would want to implement further checking on no `whitespace` in username or password; password must be at least 8 chars, alphanumeric.
 
 b) For server side, on signup, I do not allow duplicate username. This was done by checking whether the username provided by user was already inside the db.
-For login, I checked whether the username provided already exists in db. If it doesn't, I would prompt the user to signup. As for existing usernme, I would check whether the password matches. TO FOLLOW UP: I would want to hash the password and compare the hashed password with the one (hashed) stored in the db.
+For login, I checked whether the username provided already exists in db. If it doesn't, I would prompt the user to signup. As for existing usernme, I would check whether the password matches. TO FOLLOW UP: I would want to hash the password and compare the hashed password with the one (hashed) stored in the db. Try `bcrypt`?.
 
 9) After the user has successfully logged in, the web app would automatically directs the user to their own todolist with the link `/todolist/:username`. This was done using `useHistory`
 
@@ -52,3 +52,4 @@ For login, I checked whether the username provided already exists in db. If it d
 10) Each user's todolist is store in the db as a collection with his/her username as collection's name. I retrieve the `username` from the link path through `{match}` in the link with `let {params: {username}} = match`. With this, the variable `username` will store the user's username. Using this `username`, I can pass it during add, update, delete requests to the server.
 
 11) UPCOMING: TO FINISH UP WITH THE TO FOLLOW UP ABOVE and TO Redirect user to login page if he/she tries to access the todolist using the link path `/todolist/username`.
+Try `res.redirect("/")`?
