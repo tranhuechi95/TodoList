@@ -13,6 +13,9 @@ const mongoClient = new MongoClient(url);
 let db;
 let collection;
 
+const bcrypt = require('bcrypt');
+const saltRounds = 5;
+
 /* FOR INITIAL CONNECTION TO DB */
 mongoClient.connect((err) => {
     if (err) {
@@ -39,23 +42,30 @@ mongoClient.connect((err) => {
 app.post('/login', (req, res) => {
     console.log("LOGIN request");
     collection = db.collection('userCollection');
+    
     collection.find({username: {$eq: req.body.loginUsername}}).toArray(function(err, result) {
         if (err) {
             console.log(err);
         } else {
-            console.log(result);
             if (result.length === 0) {
                 console.log("User does not exists");
                 res.send("Username does not exists");
             } else {
                 // need to check whether password match?
-                if (result[0].password === req.body.loginPassword) {
-                    console.log("Correct password");
-                    res.send("Valid username");
-                } else {
-                    console.log("Wrong password");
-                    res.send("Your password is wrong");
-                }
+                bcrypt.compare(req.body.loginPassword, result[0].encryptedPassword, (err, result) => {
+                    if (err) {
+                        console.log(`Error during checking ${err}`);
+                        res.send("Wrong password");
+                    } else {
+                        if (result == true) {
+                            console.log("Correct password");
+                            res.send("Valid username");
+                        } else {
+                            console.log("Wrong password");
+                            res.send("Your password is wrong");
+                        }
+                    }
+                });
             }
         }
     });
@@ -73,16 +83,31 @@ app.post('/signup', (req, res) => {
         if (err) console.log(err);
         console.log(result);
         if (result.length === 0) {
-            collection.insertOne({username: req.body.signupUsername, password: req.body.signupPassword},
-                (err, result)=> {
-                    if (err) {
-                        console.log("Error duing insertion " + err);
-                        res.send("Failed to signup!");
-                    } else {
-                        console.log("Signup succeeds");
-                        res.send("Signup is successful");
-                    }
-                })
+            // generate hash
+            bcrypt.genSalt(saltRounds, (err, salt) => {
+                if (err) {
+                    console.log(`Error during salt generation ${err}`);
+                    res.send("Failed to signup!");
+                } else {
+                    bcrypt.hash(req.body.signupPassword, salt, (err, hash) => {
+                        if (err) {
+                            console.log(`Error during hashing ${err}`);
+                            res.send("Failed to signup");
+                        } else {
+                            collection.insertOne({username: req.body.signupUsername, encryptedPassword: hash},
+                                (err, result) => {
+                                if (err) {
+                                    console.log("Error duing insertion " + err);
+                                    res.send("Failed to signup!");
+                                } else {
+                                    console.log("Signup succeeds");
+                                    res.send("Signup is successful");
+                                }
+                            })
+                        }
+                    })
+                }
+            }) 
         } else {
             // username alr exists
             res.send("Username already exists");
@@ -204,4 +229,9 @@ app.delete('/todolist', (req, res) => {
             }
         })
     }  
+})
+
+/* FOR REDIRECT WHEN USER TRY TO ACCESS TODOLIST WITHOUT SIGN-IN */
+app.get('/todolist/:username', (req, res) => {
+    res.redirect('/');
 })

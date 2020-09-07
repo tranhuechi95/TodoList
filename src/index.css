@@ -1,5 +1,12 @@
+* {
+    box-sizing: border-box;
+}
 body {
-    font-family: sans-serif;
+    font-family: 'Proxima Nova', sans-serif;
+    background: pink;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-size: 14px;
 }
 
@@ -14,7 +21,84 @@ body {
     margin: 5px;
 }
 
-.form-input > * {
+
+
+/* for SIGN-UP and LOGIN form */
+
+.main-container {
+    background-color: #ffffff;
+    overflow: hidden;
+    margin: 20px;
+    border-radius: 10px;
+    min-height: 400px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+.header {
+    font-size: 25px;
+    font-weight: bold;
+    background-color:  #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70px;
+}
+
+.header h2 {
+    padding: 15px 15px;
+}
+.form {
     display: block;
-    margin: 10px;
+}
+
+.form-control {
+    width: 100%;
+}
+
+.form-control label {
+    display: block;
+    font-size: 20px;
+    margin: 10px 0px 10px 25px;
+}
+
+.form-control input {
+    display: block;
+    margin: 0px 20px;
+    padding: 10px;
+    width: 250px;
+    border: 2px solid #f0f0f0;
+    border-radius: 5px;
+}
+
+.form-control.success input {
+    border: 2px solid #2ecc71;
+    border-radius: 5px;
+}
+
+.form-control.error input {
+    border: 2px solid #ff0000;
+    border-radius: 5px;
+}
+
+.error-msg {
+    margin: 0px 20px;
+    color: #ff0000;
+    visibility: hidden;
+}
+
+.form-control.error small {
+    visibility: visible;
+}
+
+.button-container {
+    background-color: pink;
+    margin: 20px;
+    display: flex;
+    justify-content: center; 
+}
+.button {
+    background-color: pink;
+    font-size: 20px;
+    border-style: none;
+    padding: 10px;
+    width: 100%;
 }
