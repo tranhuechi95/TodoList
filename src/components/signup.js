@@ -32,25 +32,34 @@ const Signup = () => {
             setPasswordErrorMsg("Password cannot be empty");
             flag = false;
         } else {
-            // simple for now
-            setCheckPassword(true);
+            /* password criteria
+            1) Must be at least 8 chars
+            2) Must be alpha-numeric
+             */
+            let regex = /^(?=.*\d+)(?=.*[a-zA-Z])[0-9a-zA-Z]{8,}$/;
+            if (!signupInputPassword.match(regex)) {
+                // console.log(signupInputPassword.match(regex)); // return null;
+                setCheckPassword(false);
+                setPasswordErrorMsg("Password must be >= 8 chars and alpha-numeric");
+                flag = false;
+            } else {
+                setCheckPassword(true);
+                if (signupInputRetypePassword === '') {
+                    setCheckPassword2(false);
+                    setPassword2ErrorMsg("Verify password cannot be empty");
+                    flag = false;
+                } else if (signupInputPassword !== signupInputRetypePassword) {
+                    setSignupInputRetypePassword('');
+                    setCheckPassword2(false);
+                    setPassword2ErrorMsg("Verify password does not match");
+                    flag = false;
+                } else {
+                    setCheckPassword(true);
+                    setCheckPassword2(true);
+                }
+            }
         }
-        if (signupInputRetypePassword === '') {
-            setCheckPassword2(false);
-            setPassword2ErrorMsg("Verify password cannot be empty");
-            flag = false;
-        } else if (signupInputPassword !== signupInputRetypePassword) {
-            setSignupInputPassword('');
-            setSignupInputRetypePassword('');
-            setCheckPassword(false);
-            setCheckPassword2(false);
-            setPasswordErrorMsg("Passwords do not match");
-            setPassword2ErrorMsg("Passwords do not match");
-            flag = false;
-        } else {
-            setCheckPassword(true);
-            setCheckPassword2(true);
-        }
+        
         if (flag) {
             // here, we would send a POST request to signup
             fetch('/signup', {
@@ -81,11 +90,11 @@ const Signup = () => {
         
     }
     return (
-        <section className="main-container">
+        <section className="main-container-left">
             <header className="header">
                 <div>SIGN UP</div>
             </header>
-            <form onSubmit={signUpSubmitHandler} className="form-input">
+            <form onSubmit={signUpSubmitHandler} className="form">
                 <div className={checkUsername === '' ? normalFormClass : (checkUsername === false ? errorFormClass : validFormClass)}>
                     <label>Username</label>
                     <input type="text" placeholder="Your username" value={signupInputUsername} 

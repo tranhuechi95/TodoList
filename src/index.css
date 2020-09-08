@@ -7,30 +7,47 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 14px;
+    font-size: 16px;
 }
-
-.mainpage-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-#mainpage-container-id > * {
-    margin: 5px;
-}
-
-
 
 /* for SIGN-UP and LOGIN form */
+
+.main-container-logout {
+    grid-area: logout;
+    /* background-color: #ffffff;
+    overflow: hidden; */
+    margin: 20px;
+    margin-bottom: auto;
+    /* border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); */
+}
+
+.main-container-left {
+    grid-area: formA;
+    background-color: #ffffff;
+    overflow: hidden;
+    margin: 20px;
+    margin-bottom: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.main-container-right {
+    grid-area: formB;
+    background-color: #ffffff;
+    overflow: hidden;
+    margin: 20px;
+    margin-bottom: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
 
 .main-container {
     background-color: #ffffff;
     overflow: hidden;
     margin: 20px;
     border-radius: 10px;
-    min-height: 400px;
+    /* min-height: 400px; */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 .header {
@@ -101,4 +118,25 @@ body {
     border-style: none;
     padding: 10px;
     width: 100%;
+}
+
+/* for mainpage */
+.mainpage-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 100px ;
+    grid-template-areas: "formA formB logout";
+}
+
+.logout-link {
+    text-decoration: none;
+}
+
+.items-container {
+    display: flex;
+    justify-content: center;
+}
+
+.single-item-container {
+    display: block;
+    margin: 10px;
 }

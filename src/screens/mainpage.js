@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import TodoList from '../components/todolist';
+import Logout from '../components/logout';
 
 const Mainpage = ({ match }) => {
     let { params: {username}} = match;
@@ -9,6 +10,20 @@ const Mainpage = ({ match }) => {
     let [idForDel, setIdForDel] = useState(-1);
     let [toUpdateContent, setToUpdateContent] = useState('');
     let [idForUpdate, setIdForUpdate] = useState(-1);
+
+    let [checkAddItem, setCheckAddItem] = useState('');
+    let [checkUpdate, setCheckUpdate] = useState('');
+    let [checkUpdateContent, setCheckUpdateContent] = useState('');
+    let [checkDelete, setCheckDelete] = useState('');
+
+    let normalFormClass = 'form-control';
+    let errorFormClass = 'form-control error';
+    let validFormClass = 'form-control success';
+
+    let [addItemError, setAddItemError] = useState('');
+    let [selectUpdateError, setSelectUpdateError] = useState('');
+    let [updateContentError, setUpdateContentError] = useState('');
+    let [deleteItemError, setDeleteItemError] = useState('');
 
     // get the initial state
     useEffect(() => {
@@ -59,9 +74,10 @@ const Mainpage = ({ match }) => {
         // send a post request to the server from here!
         addEvent.preventDefault();
         if (todoItem === '') {
-            alert("You forget to input sth!");
+            setCheckAddItem(false);
+            setAddItemError("Add content cannot be empty");
+            // alert("You forget to input sth!");
         } else {
-            // let currentId = Math.floor(Math.random() * 100000);
             setIdForAddItem(idForAddItem + 1); // increase the id
             let requestBody = { _id: idForAddItem, toAdd: todoItem, currentUser: username };
             sendRequest('POST', requestBody);
@@ -69,16 +85,21 @@ const Mainpage = ({ match }) => {
             setIdForDel(idForAddItem);
             setIdForUpdate(idForAddItem);
             setTodoItem('');
+            setCheckDelete('');
         }
     };
 
     const updateHandler = (updateEvent) => {
         updateEvent.preventDefault();
         if (toUpdateContent === '') {
-            alert("You forget update content!");
+            setCheckUpdateContent(false);
+            setUpdateContentError("Update content cannot be empty");
+            // alert("You forget update content!");
         } else {
             if (idForUpdate === -1) {
-                alert("You forget to choose an item to update!");
+                setCheckUpdate(false);
+                setSelectUpdateError("You forget to choose an item");
+                // alert("You forget to choose an item to update!");
             } else {
                 // do the update here!
                 let itemToUpdate = todoList.find(singleTodo => singleTodo.todoId === parseInt(idForUpdate));
@@ -108,7 +129,9 @@ const Mainpage = ({ match }) => {
             }
         }
         if (content === '') {
-            alert("Your list is empty");
+            setCheckDelete(false);
+            setDeleteItemError("Nothing to delete");
+            // alert("Your list is empty");
         } else {
             if (content !== undefined && window.confirm(`Do you want to delete "${content}"`)) {
                 setTodoList(todoList.filter(singleTodo => {
@@ -138,62 +161,76 @@ const Mainpage = ({ match }) => {
     };
 
     return (
-        <div className="mainpage-container" id="mainpage-container-id">
-            <div>YOUR TO DO LIST</div>
-            { todoList.length !== 0 && todoList[0].todoContent !== undefined
-                ? todoList.map(singleTodo => {
-                return (
-                    <div>{singleTodo.todoContent}</div>
-                )})
-                : <div>Nothing yet!</div>
-            }
-            <form className="add-item-container" onSubmit={addHandler}>
-                <label>To add item
-                    <input type="text" placeholder="Add your todo" value={todoItem} 
-                        onChange={event => setTodoItem(event.target.value)} />
-                    <input type="submit" value="ADD"/>
-                </label>
-            </form>
+        <section className="mainpage-container">
+            <TodoList list={todoList}/>
+            <div className="main-container-right">
+                <header className="header">
+                    <div>ACTIONS</div>
+                </header>
+                <form className="form" onSubmit={addHandler}>
+                    <div className={checkAddItem === '' ? normalFormClass : (checkAddItem === false ? errorFormClass : validFormClass)}>
+                        <label>To add item</label>
+                        <input type="text" placeholder="Add your todo" value={todoItem} 
+                            onChange={event => setTodoItem(event.target.value)} />
+                        <small className="error-msg">{addItemError}</small>
+                    </div>
+                    <div className="button-container">
+                        <input className="button" type="submit" value="ADD" />
+                    </div>
+                </form>
 
-            <form onSubmit={updateHandler}>
-                <label>To update item
-                    <select value={idForUpdate} onChange={event => setIdForUpdate(event.target.value)}>
-                        <option value='0' disabled>Select an item</option>
-                        {todoList.map(singleTodo => {
-                            return (
-                                <option value={singleTodo.todoId}>{singleTodo.todoContent}</option>
-                            )
-                        })}
-                    </select>
-                    <input type="text" placeholder="Change item to" value={toUpdateContent} 
-                        onChange={event => setToUpdateContent(event.target.value)}/>
-                    <input type="submit" value="UPDATE" />
-                </label>
-            </form>
+                <form className="form" onSubmit={updateHandler}>
+                    <div className={checkUpdate === '' ? normalFormClass : (checkUpdate === false ? errorFormClass : validFormClass)}>
+                        <label>To update item</label>
+                        <select value={idForUpdate} onChange={event => setIdForUpdate(event.target.value)}>
+                            <option value='0' disabled>Select an item</option>
+                            {todoList.map(singleTodo => {
+                                return (
+                                    <option value={singleTodo.todoId}>{singleTodo.todoContent}</option>
+                                )
+                            })}
+                        </select>
+                        <small className="error-msg">{selectUpdateError}</small>
+                    </div>
+                    <div className={checkUpdateContent === '' ? normalFormClass : (checkUpdateContent === false ? errorFormClass : validFormClass)}>
+                        <label>Update item content</label>
+                        <input type="text" placeholder="Change item to" value={toUpdateContent} 
+                            onChange={event => setToUpdateContent(event.target.value)}/>
+                        {/* <input type="submit" value="UPDATE" /> */}
+                        <small className="error-msg">{updateContentError}</small>
+                    </div>
+                    <div className="button-container">
+                        <input className="button" type="submit" value="UPDATE" />
+                    </div>
+                </form>
 
-            <form className="delete-item-container" onSubmit={delHandler}>
-                <label>To delete items
-                    <select value={idForDel} onChange={event => setIdForDel(event.target.value)}>
-                        <option value='0' disabled>Select an item</option>
-                        {todoList.map(singleTodo => {
-                            return (
-                                <option value={singleTodo.todoId}>{singleTodo.todoContent}</option>
-                            )
-                        })}
-                    </select>
-                    <input type="submit" value="DELETE ITEM"/>
-                </label>
-            </form>
+                <form className="form" onSubmit={delHandler}>
+                    <div className={checkDelete === '' ? normalFormClass : (checkDelete === false ? errorFormClass : validFormClass)}>
+                        <label>To delete item</label>
+                        <select value={idForDel} onChange={event => setIdForDel(event.target.value)}>
+                            <option value='0' disabled>Select an item</option>
+                            {todoList.map(singleTodo => {
+                                return (
+                                    <option value={singleTodo.todoId}>{singleTodo.todoContent}</option>
+                                )
+                            })}
+                        </select>
+                        <small className="error-msg">{deleteItemError}</small>
+                    </div>
+                    <div className="button-container">
+                        <input className="button" type="submit" value="DELETE ITEM" />
+                    </div>
+                </form>
 
-            <form className="delete-entire-list" onSubmit={delWholeHandler}>
-                <label>To delete entire list
-                    <input type="submit" value="DELETE WHOLE LIST" />
-                </label> 
-            </form>
-            <div>
-                <Link to="/">Logout</Link>
+                <form className="form" onSubmit={delWholeHandler}>
+                    <div className="button-container">
+                        <input className="button" type="submit" value="DELETE WHOLE LIST" />
+                    </div>
+                </form>
             </div>
-        </div>
+            <Logout />    
+        </section>
+        
     )
 };
 

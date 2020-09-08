@@ -44,7 +44,7 @@ const Login = () => {
             }).then(res => res.text())
             .then(textRes => {
                 if (textRes === "Valid username") {
-                    alert("You are login");
+                    // alert("You are login");
                     history.push(`/todolist/${loginInputUsername}`);
                 } else if (textRes === "Username does not exists") {
                     // here, I want to attach the class error to the username form-control
@@ -64,7 +64,7 @@ const Login = () => {
         }
     }
     return (
-        <section className="main-container">
+        <section className="main-container-right">
             <header class="header">
                 <div>LOG IN</div>
             </header>
