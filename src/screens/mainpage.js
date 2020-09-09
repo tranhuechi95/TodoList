@@ -122,6 +122,7 @@ const Mainpage = ({ match }) => {
         // send a delete request to the server
         deleteEvent.preventDefault(); // Do not forget this!
         let content = '';
+        // console.log(`id for del is ${idForDel}`);
         for (let i = 0; i < todoList.length; i++) {
             if (todoList[i].todoId === parseInt(idForDel)) {
                 content = todoList[i].todoContent;
@@ -139,7 +140,16 @@ const Mainpage = ({ match }) => {
                 }));
                 let requestBody = { currentUser: username, itemToDelete: idForDel };
                 sendRequest('DELETE', requestBody);
-                setIdForDel(-1);
+                if (todoList.length > 1) {
+                    for (let item of todoList) {
+                        if (item.todoId !== parseInt(idForDel)) {
+                            setIdForDel(item.todoId);
+                            break;
+                        }
+                    }
+                } else {
+                    setIdForDel(-1);
+                }
             }
         } 
     };
@@ -171,7 +181,7 @@ const Mainpage = ({ match }) => {
                     <div className={checkAddItem === '' ? normalFormClass : (checkAddItem === false ? errorFormClass : validFormClass)}>
                         <label>To add item</label>
                         <input type="text" placeholder="Add your todo" value={todoItem} 
-                            onChange={event => setTodoItem(event.target.value)} />
+                            onChange={event => setTodoItem(event.target.value)} maxLength="40"/>
                         <small className="error-msg">{addItemError}</small>
                     </div>
                     <div className="button-container">
@@ -182,14 +192,16 @@ const Mainpage = ({ match }) => {
                 <form className="form" onSubmit={updateHandler}>
                     <div className={checkUpdate === '' ? normalFormClass : (checkUpdate === false ? errorFormClass : validFormClass)}>
                         <label>To update item</label>
-                        <select value={idForUpdate} onChange={event => setIdForUpdate(event.target.value)}>
-                            <option value='0' disabled>Select an item</option>
-                            {todoList.map(singleTodo => {
-                                return (
-                                    <option value={singleTodo.todoId}>{singleTodo.todoContent}</option>
-                                )
-                            })}
-                        </select>
+                        <div className="option-container">
+                            <select value={idForUpdate} onChange={event => setIdForUpdate(event.target.value)}>
+                                <option className="single-option" value='0' disabled>Select an item</option>
+                                {todoList.map(singleTodo => {
+                                    return (
+                                        <option value={singleTodo.todoId}>{singleTodo.todoContent}</option>
+                                    )
+                                })}
+                            </select>
+                        </div>
                         <small className="error-msg">{selectUpdateError}</small>
                     </div>
                     <div className={checkUpdateContent === '' ? normalFormClass : (checkUpdateContent === false ? errorFormClass : validFormClass)}>
@@ -207,14 +219,16 @@ const Mainpage = ({ match }) => {
                 <form className="form" onSubmit={delHandler}>
                     <div className={checkDelete === '' ? normalFormClass : (checkDelete === false ? errorFormClass : validFormClass)}>
                         <label>To delete item</label>
-                        <select value={idForDel} onChange={event => setIdForDel(event.target.value)}>
-                            <option value='0' disabled>Select an item</option>
-                            {todoList.map(singleTodo => {
-                                return (
-                                    <option value={singleTodo.todoId}>{singleTodo.todoContent}</option>
-                                )
-                            })}
-                        </select>
+                        <div className="option-container">
+                            <select value={idForDel} onChange={event => setIdForDel(event.target.value)}>
+                                <option className="single-option" value='0' disabled>Select an item</option>
+                                {todoList.map(singleTodo => {
+                                    return (
+                                        <option value={singleTodo.todoId}>{singleTodo.todoContent}</option>
+                                    )
+                                })}
+                            </select>
+                        </div>
                         <small className="error-msg">{deleteItemError}</small>
                     </div>
                     <div className="button-container">

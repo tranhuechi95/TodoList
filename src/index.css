@@ -14,14 +14,71 @@ body {
 
 .main-container-logout {
     grid-area: logout;
-    /* background-color: #ffffff;
-    overflow: hidden; */
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin: 20px;
     margin-bottom: auto;
-    /* border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); */
 }
 
+.main-container-signup {
+    grid-area: formSignup;
+    background-color: #ffffff;
+    overflow: hidden;
+    margin: 20px;
+    margin-bottom: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.main-container-login {
+    grid-area: formLogin;
+    background-color: #ffffff;
+    overflow: hidden;
+    margin: 20px;
+    margin-bottom: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.header-form {
+    width: 290px;
+    font-size: 25px;
+    font-weight: bold;
+    background-color:  #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70px;
+    cursor: pointer;
+}
+
+.form-login-signup {
+    display: none;
+}
+
+.form-login-signup.selected {
+    display: block;
+}
+
+.mainpage-container-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "formSignup formLogin";
+}
+
+@media only screen and (max-width: 600px) {
+    .mainpage-container-form {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+            "formSignup"
+            "formLogin";
+    }
+}
+
+/* for mainpage */
 .main-container-left {
     grid-area: formA;
     background-color: #ffffff;
@@ -47,10 +104,11 @@ body {
     overflow: hidden;
     margin: 20px;
     border-radius: 10px;
-    /* min-height: 400px; */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
+
 .header {
+    width: 290px;
     font-size: 25px;
     font-weight: bold;
     background-color:  #f0f0f0;
@@ -104,11 +162,34 @@ body {
 
 .form-control.error small {
     visibility: visible;
+    width: 240px;
+    overflow-wrap: break-word;
 }
+
+.option-container {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.option-container select {
+    width: 250px;
+    height: 40px;
+    text-align: center;
+    border: 2px solid #f0f0f0;
+    border-radius: 5px;
+    padding: 5px 20px;
+}
+
+/* .single-option {
+    background-color: blue;
+} */
 
 .button-container {
     background-color: pink;
-    margin: 20px;
+    margin: 10px 20px;
     display: flex;
     justify-content: center; 
 }
@@ -127,16 +208,35 @@ body {
     grid-template-areas: "formA formB logout";
 }
 
+@media only screen and (max-width: 600px) {
+    .mainpage-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+            "formA"
+            "formB"
+            "logout";
+    }
+}
+
 .logout-link {
     text-decoration: none;
+    font-weight: bold;
+    font-size: 20px;
+    color: blue;
 }
 
 .items-container {
     display: flex;
-    justify-content: center;
+    height: 400px;
+    /* tell the container that its content overflows */
+    overflow: scroll;
+    margin: auto; 
+    /* so that scroll does not cut off 1st and last item */
+    flex-direction: column;
 }
 
 .single-item-container {
-    display: block;
     margin: 10px;
+    text-align: center;
 }

@@ -12,10 +12,9 @@ const TodoList = ({list}) => {
                     return (
                         <div className="single-item-container">{singleTodo.todoContent}</div>
                     )})
-                    : <div>Nothing yet!</div>
+                    : <div className="single-item-container">Nothing yet!</div>
                 }
             </div>
-            
         </div>
     )  
 }

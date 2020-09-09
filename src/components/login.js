@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-const Login = () => {
+const Login = ({formDisplayFunction, formDisplay}) => {
     let [loginInputUsername, setLoginInputUsername] = useState('');
     let [loginInputPassword, setLoginInputPassword] = useState('');
     let [checkUsername, setCheckUsername] = useState('');
@@ -15,7 +15,7 @@ const Login = () => {
     let [passwordErrorMsg, setPasswordErrorMsg] = useState('');
 
     let history = useHistory();
-
+    
     const loginSubmitHandler = (loginEvent) => {
         loginEvent.preventDefault();
         let flag = true;
@@ -64,11 +64,11 @@ const Login = () => {
         }
     }
     return (
-        <section className="main-container-right">
-            <header class="header">
+        <section className="main-container-login">
+            <header class="header-form" onClick={formDisplayFunction}>
                 <div>LOG IN</div>
             </header>
-            <form onSubmit={loginSubmitHandler} className="form">
+            <form onSubmit={loginSubmitHandler} className={formDisplay}>
                 <div className={checkUsername === '' ? normalFormClass : (checkUsername === false ? errorFormClass : validFormClass)}>
                     <label>Username</label>
                     <input type="text" placeholder="Your username" value={loginInputUsername} 

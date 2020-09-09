@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Signup = () => {
+const Signup = ({formDisplayFunction, formDisplay}) => {
     let [signupInputUsername, setSignupInputUsername] = useState('');
     let [signupInputPassword, setSignupInputPassword] = useState('');
     let [signupInputRetypePassword, setSignupInputRetypePassword] = useState('');
@@ -90,11 +90,11 @@ const Signup = () => {
         
     }
     return (
-        <section className="main-container-left">
-            <header className="header">
+        <section className="main-container-signup">
+            <header className="header-form" onClick={formDisplayFunction}>
                 <div>SIGN UP</div>
             </header>
-            <form onSubmit={signUpSubmitHandler} className="form">
+            <form onSubmit={signUpSubmitHandler} className={formDisplay}>
                 <div className={checkUsername === '' ? normalFormClass : (checkUsername === false ? errorFormClass : validFormClass)}>
                     <label>Username</label>
                     <input type="text" placeholder="Your username" value={signupInputUsername} 
