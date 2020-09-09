@@ -38,10 +38,10 @@ This project was my practice with REST API and usage of No SQL database.
 
 8) For login/signup page, I did some error checking on client side as well as server side with database.
 
-a) For client side, on signup, the initial and retyped password must match. TO FOLLOW UP: i would want to implement further checking on no `whitespace` in username or password; password must be at least 8 chars, alphanumeric.
+a) For client side, on signup, the initial and retyped password must match. For password, it should be alpha-numeric with length of at least 8 chars. The following regex was used `/^(?=.*\d+)(?=.*[a-zA-Z])[0-9a-zA-Z]{8,}$/` with `?=` to look ahead for number or alphabet letter. `{a,b}` denotes length to be from a to b chars length.
 
 b) For server side, on signup, I do not allow duplicate username. This was done by checking whether the username provided by user was already inside the db.
-For login, I checked whether the username provided already exists in db. If it doesn't, I would prompt the user to signup. As for existing usernme, I would check whether the password matches. TO FOLLOW UP: I would want to hash the password and compare the hashed password with the one (hashed) stored in the db. Try `bcrypt`?. `https://github.com/kelektiv/node.bcrypt.js`.
+For login, I checked whether the username provided already exists in db. If it doesn't, I would prompt the user to signup. As for existing usernme, I would check whether the password matches. For security reason, I will only store the password hash. To hash password, the `bcrypt` node package was used. Details on `bcrypt` can be found at https://github.com/kelektiv/node.bcrypt.js.
 
 9) After the user has successfully logged in, the web app would automatically directs the user to their own todolist with the link `/todolist/:username`. This was done using `useHistory`
 
@@ -51,6 +51,9 @@ For login, I checked whether the username provided already exists in db. If it d
 ```
 10) Each user's todolist is store in the db as a collection with his/her username as collection's name. I retrieve the `username` from the link path through `{match}` in the link with `let {params: {username}} = match`. With this, the variable `username` will store the user's username. Using this `username`, I can pass it during add, update, delete requests to the server.
 
-11) UPCOMING: TO FINISH UP WITH THE TO FOLLOW UP ABOVE and TO Redirect user to login page if he/she tries to access the todolist using the link path `/todolist/username`.
-Try `res.redirect("/")`?
-https://www.youtube.com/watch?v=rsd4FNGTRBw
+11) If user tries to access his/her todolist using the link path `/todolist/username`, he/she will be `redirect` to the login/signup page. The `GET` request was handled as followed: 
+```
+  app.get('/todolist/:username', function(req, res) {
+    res.redirect('/');
+  })
+```
