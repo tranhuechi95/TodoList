@@ -10,7 +10,7 @@ This project was my practice with REST API and usage of No SQL database.
 
 4) Start the website at [http://localhost:3000](http://localhost:3000) by running `npm run start`.
 
-### Personal learning point
+### Personal learning points
 
 1) To implement the server to receive the request from the client side, I need to make it the same process. i.e same port. Otherwise, we will not be able to view the request content (non-cors).
 
