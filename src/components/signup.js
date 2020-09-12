@@ -40,7 +40,7 @@ const Signup = ({formDisplayFunction, formDisplay}) => {
             if (!signupInputPassword.match(regex)) {
                 // console.log(signupInputPassword.match(regex)); // return null;
                 setCheckPassword(false);
-                setPasswordErrorMsg("Password must be >= 8 chars and alpha-numeric");
+                setPasswordErrorMsg("Password must be at least 8 characters and alpha-numeric");
                 flag = false;
             } else {
                 setCheckPassword(true);
@@ -99,19 +99,19 @@ const Signup = ({formDisplayFunction, formDisplay}) => {
                     <label>Username</label>
                     <input type="text" placeholder="Your username" value={signupInputUsername} 
                             onChange={(event) => setSignupInputUsername(event.target.value)} />
-                    <small className="error-msg">{usernameErrorMsg}</small>
+                    <small>{usernameErrorMsg}</small>
                 </div>
                 <div className={checkPassword === '' ? normalFormClass : (checkPassword === false ? errorFormClass : validFormClass)}>
                     <label>Password</label>
                     <input type="password" placeholder="Your chosen password" value={signupInputPassword} 
                             onChange={(event) => setSignupInputPassword(event.target.value)} />
-                    <small className="error-msg">{passwordErrorMsg}</small>
+                    <small>{passwordErrorMsg}</small>
                 </div>
                 <div className={checkPassword2 === '' ? normalFormClass : (checkPassword2 === false ? errorFormClass : validFormClass)}>
                     <label>Verify password</label>
                     <input type="password" placeholder="Retype your password" value={signupInputRetypePassword} 
                             onChange={(event) => setSignupInputRetypePassword(event.target.value)} />
-                    <small className="error-msg">{password2ErrorMsg}</small>
+                    <small>{password2ErrorMsg}</small>
                 </div>
 
                 <div className="button-container">

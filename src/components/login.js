@@ -73,13 +73,13 @@ const Login = ({formDisplayFunction, formDisplay}) => {
                     <label>Username</label>
                     <input type="text" placeholder="Your username" value={loginInputUsername} 
                         onChange={(event) => setLoginInputUsername(event.target.value)} />
-                    <small className="error-msg">{usernameErrorMsg}</small>
+                    <small>{usernameErrorMsg}</small>
                 </div>
                 <div className={checkPassword === '' ? normalFormClass : (checkPassword === false ? errorFormClass : validFormClass)}>
                     <label>Password</label>
                     <input type="password" placeholder="Your password" value={loginInputPassword} 
                         onChange={(event) => setLoginInputPassword(event.target.value)} />
-                    <small className="error-msg">{passwordErrorMsg}</small>
+                    <small>{passwordErrorMsg}</small>
                 </div>
                 <div className="button-container">
                     <input className="button" type="submit" value="SIGN IN" />

@@ -15,15 +15,11 @@ const Mainpage = ({ match }) => {
     let [checkUpdate, setCheckUpdate] = useState('');
     let [checkUpdateContent, setCheckUpdateContent] = useState('');
     let [checkDelete, setCheckDelete] = useState('');
+    let [checkDeleteWhole, setCheckDeleteWhole] = useState('');
 
     let normalFormClass = 'form-control';
     let errorFormClass = 'form-control error';
     let validFormClass = 'form-control success';
-
-    let [addItemError, setAddItemError] = useState('');
-    let [selectUpdateError, setSelectUpdateError] = useState('');
-    let [updateContentError, setUpdateContentError] = useState('');
-    let [deleteItemError, setDeleteItemError] = useState('');
 
     // get the initial state
     useEffect(() => {
@@ -75,7 +71,10 @@ const Mainpage = ({ match }) => {
         addEvent.preventDefault();
         if (todoItem === '') {
             setCheckAddItem(false);
-            setAddItemError("Add content cannot be empty");
+            setCheckUpdate('');
+            setCheckUpdateContent('');
+            setCheckDelete('');
+            setCheckDeleteWhole('');
             // alert("You forget to input sth!");
         } else {
             setIdForAddItem(idForAddItem + 1); // increase the id
@@ -93,12 +92,18 @@ const Mainpage = ({ match }) => {
         updateEvent.preventDefault();
         if (toUpdateContent === '') {
             setCheckUpdateContent(false);
-            setUpdateContentError("Update content cannot be empty");
+            setCheckAddItem('');
+            setCheckUpdate('');
+            setCheckDelete('');
+            setCheckDeleteWhole('');
             // alert("You forget update content!");
         } else {
             if (idForUpdate === -1) {
                 setCheckUpdate(false);
-                setSelectUpdateError("You forget to choose an item");
+                setCheckUpdateContent('');
+                setCheckAddItem('');
+                setCheckDelete('');
+                setCheckDeleteWhole('');
                 // alert("You forget to choose an item to update!");
             } else {
                 // do the update here!
@@ -122,7 +127,6 @@ const Mainpage = ({ match }) => {
         // send a delete request to the server
         deleteEvent.preventDefault(); // Do not forget this!
         let content = '';
-        // console.log(`id for del is ${idForDel}`);
         for (let i = 0; i < todoList.length; i++) {
             if (todoList[i].todoId === parseInt(idForDel)) {
                 content = todoList[i].todoContent;
@@ -131,8 +135,11 @@ const Mainpage = ({ match }) => {
         }
         if (content === '') {
             setCheckDelete(false);
-            setDeleteItemError("Nothing to delete");
-            // alert("Your list is empty");
+            setCheckUpdateContent('');
+            setCheckAddItem('');
+            setCheckUpdate('');
+            setCheckDeleteWhole('');
+
         } else {
             if (content !== undefined && window.confirm(`Do you want to delete "${content}"`)) {
                 setTodoList(todoList.filter(singleTodo => {
@@ -166,7 +173,12 @@ const Mainpage = ({ match }) => {
                 sendRequest('DELETE', requestBody);
             }
         } else {
-            alert("The list is already empty");
+            setCheckDeleteWhole(false);
+            setCheckDelete('');
+            setCheckUpdateContent('');
+            setCheckAddItem('');
+            setCheckUpdate('');
+            // alert("The list is already empty");
         }
     };
 
@@ -181,8 +193,8 @@ const Mainpage = ({ match }) => {
                     <div className={checkAddItem === '' ? normalFormClass : (checkAddItem === false ? errorFormClass : validFormClass)}>
                         <label>To add item</label>
                         <input type="text" placeholder="Add your todo" value={todoItem} 
-                            onChange={event => setTodoItem(event.target.value)} maxLength="40"/>
-                        <small className="error-msg">{addItemError}</small>
+                            onChange={event => setTodoItem(event.target.value)} maxLength="100"/>
+                        <small>Add content cannot be empty</small>
                     </div>
                     <div className="button-container">
                         <input className="button" type="submit" value="ADD" />
@@ -202,14 +214,14 @@ const Mainpage = ({ match }) => {
                                 })}
                             </select>
                         </div>
-                        <small className="error-msg">{selectUpdateError}</small>
+                        <small>You forget to choose an item</small>
                     </div>
                     <div className={checkUpdateContent === '' ? normalFormClass : (checkUpdateContent === false ? errorFormClass : validFormClass)}>
                         <label>Update item content</label>
                         <input type="text" placeholder="Change item to" value={toUpdateContent} 
                             onChange={event => setToUpdateContent(event.target.value)}/>
                         {/* <input type="submit" value="UPDATE" /> */}
-                        <small className="error-msg">{updateContentError}</small>
+                        <small>Update content cannot be empty</small>
                     </div>
                     <div className="button-container">
                         <input className="button" type="submit" value="UPDATE" />
@@ -229,7 +241,7 @@ const Mainpage = ({ match }) => {
                                 })}
                             </select>
                         </div>
-                        <small className="error-msg">{deleteItemError}</small>
+                        <small>Nothing to delete</small>
                     </div>
                     <div className="button-container">
                         <input className="button" type="submit" value="DELETE ITEM" />
@@ -237,6 +249,9 @@ const Mainpage = ({ match }) => {
                 </form>
 
                 <form className="form" onSubmit={delWholeHandler}>
+                    <div className={checkDeleteWhole === '' ? normalFormClass : (checkDeleteWhole === false ? errorFormClass : validFormClass)}>
+                        <small>The list is already empty</small>
+                    </div>
                     <div className="button-container">
                         <input className="button" type="submit" value="DELETE WHOLE LIST" />
                     </div>

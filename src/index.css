@@ -108,7 +108,7 @@ body {
 }
 
 .header {
-    width: 290px;
+    width: 100%;
     font-size: 25px;
     font-weight: bold;
     background-color:  #f0f0f0;
@@ -126,7 +126,8 @@ body {
 }
 
 .form-control {
-    width: 100%;
+    width: 290px;
+    overflow-wrap: break-word;
 }
 
 .form-control label {
@@ -154,16 +155,17 @@ body {
     border-radius: 5px;
 }
 
-.error-msg {
+.form-control small {
     margin: 0px 20px;
-    color: #ff0000;
     visibility: hidden;
 }
 
 .form-control.error small {
+    /* display inline-block so that margin is perserved when overflow-wrap is applied; */
+    display: inline-block;
     visibility: visible;
-    width: 240px;
-    overflow-wrap: break-word;
+    color: #ff0000;
+    margin: 0px 20px;
 }
 
 .option-container {
@@ -180,7 +182,7 @@ body {
     text-align: center;
     border: 2px solid #f0f0f0;
     border-radius: 5px;
-    padding: 5px 20px;
+    padding: 5px 15px;
 }
 
 /* .single-option {
@@ -188,13 +190,13 @@ body {
 } */
 
 .button-container {
-    background-color: pink;
-    margin: 10px 20px;
     display: flex;
-    justify-content: center; 
+    justify-content: center;
+    box-shadow: 0 4px 4px 2px #f0f0f0;
 }
 .button {
     background-color: pink;
+    margin: 5px 20px 15px 20px;
     font-size: 20px;
     border-style: none;
     padding: 10px;
@@ -223,20 +225,23 @@ body {
     text-decoration: none;
     font-weight: bold;
     font-size: 20px;
-    color: blue;
+    color: gray;
 }
 
 .items-container {
     display: flex;
+    flex-direction: column;
     height: 400px;
     /* tell the container that its content overflows */
     overflow: scroll;
     margin: auto; 
     /* so that scroll does not cut off 1st and last item */
-    flex-direction: column;
 }
 
 .single-item-container {
-    margin: 10px;
+    margin: 10px 15px;
+    display: inline-block;
+    width: 250px;
+    overflow-wrap: break-word;
     text-align: center;
 }
