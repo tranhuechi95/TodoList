@@ -12,15 +12,15 @@ This project was my practice with REST API and usage of No SQL database.
 
 ### Personal learning points
 
-1) To implement the server to receive the request from the client side, I need to make it the same process. i.e same port. Otherwise, we will not be able to view the request content (non-cors).
+1) To implement the server to receive requests from the client side, I need to make the server and client to be on the same process. i.e same port. Otherwise, we will not be able to view the requests' content `no-cors`.
 
-2) To make both server and client to have the same process, the GET api of the server will serve the React front end part. We need to build the website first with `npm run build` first to convert the React front end into javascript  (jsx -> js). Here, we add `app.use(express.static("build"))` to the server.js file so that the GET method will render the web app from build folder.
+2) To make both server and client to have the same process, the GET API of the server will serve the React front end part. We need to build the website first with `npm run build` to convert the React front end into javascript  (jsx -> js). Here, we add `app.use(express.static("build"))` to the `server.js` file so that the GET method will render the web app from `build` folder.
 
 3) The todoList is implemented as an `array`. As such, to handle update, delete functions, I made use of `filter` and `map` functions of array. On server side, the listItems is implemented as an `array` too.
 
 4) To make sure the `update` and `delete` selection are updated when there is only one choice to select, I need to set the state of Id to select/delete to the added item so that it does not stay with the initial state.
 
-5) Before starting the `listen` of the server, ensure a successful connection was made to the MongoDB database. This ensures there will not be connection issue with db when serving other requests.
+5) Before starting to `listen` on the server, ensure a successful connection was made to the MongoDB database. This eliminates the connection issue with db when serving other requests.
 
 6) For the MongoDB database, I need to make sure the web app is `in sync` with the db. This is done with the `useEffect` hook. When the web app is first loaded, the web app `fetch` the data from the db and set the todoList in the web app.
 
@@ -42,8 +42,9 @@ This project was my practice with REST API and usage of No SQL database.
 
 a) For client side, on signup, the initial and retyped password must match. For password, it should be alpha-numeric with length of at least 8 chars. The following regex was used `/^(?=.*\d+)(?=.*[a-zA-Z])[0-9a-zA-Z]{8,}$/` with `?=` to look ahead for number or alphabet letter. `{a,b}` denotes length to be from a to b chars length.
 
-b) For server side, on signup, I do not allow duplicate username. This was done by checking whether the username provided by user was already inside the db.
-For login, I checked whether the username provided already exists in db. If it doesn't, I would prompt the user to signup. As for existing usernme, I would check whether the password matches. For security reason, I will only store the password hash. To hash password, the `bcrypt` node package was used. Details on `bcrypt` can be found at https://github.com/kelektiv/node.bcrypt.js.
+b) For server side, on signup, I do not allow duplicate usernames. This was done by checking if the username provided was already inside the db.
+
+c) For login, I checked whether the username provided already exists in db. If it doesn't, I would prompt the user to signup. As for existing usernames, I would check whether the password provided and in that in db match. For security reason, I will only store the password hash. To hash password, the `bcrypt` node package was used. Details on `bcrypt` can be found at https://github.com/kelektiv/node.bcrypt.js.
 
 10) After the user has successfully logged in, the web app would automatically directs the user to their own todolist with the link `/todolist/:username`. This was done using `useHistory`
 
@@ -54,6 +55,7 @@ For login, I checked whether the username provided already exists in db. If it d
 11) Each user's todolist is store in the db as a collection with his/her username as collection's name. I retrieve the `username` from the link path through `{match}` in the link with `let {params: {username}} = match`. With this, the variable `username` will store the user's username. Using this `username`, I can pass it during add, update, delete requests to the server.
 
 12) If user tries to access his/her todolist using the link path `/todolist/username`, he/she will be `redirect` to the login/signup page. The `GET` request was handled as followed: 
+
 ```
   app.get('/todolist/:username', function(req, res) {
     res.redirect('/');
