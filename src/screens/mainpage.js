@@ -257,7 +257,7 @@ const Mainpage = ({ match }) => {
                     </div>
                 </form>
             </div>
-            <Logout />    
+            <Logout  user={username}/>    
         </section>
         
     )
