@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Login = ({formDisplayFunction, formDisplay}) => {
     let [loginInputUsername, setLoginInputUsername] = useState('');
@@ -73,12 +74,14 @@ const Login = ({formDisplayFunction, formDisplay}) => {
                     <label>Username</label>
                     <input type="text" placeholder="Your username" value={loginInputUsername} 
                         onChange={(event) => setLoginInputUsername(event.target.value)} />
+                    <FontAwesomeIcon class="exclamation-circle" icon='exclamation-circle'/>
                     <small>{usernameErrorMsg}</small>
                 </div>
                 <div className={checkPassword === '' ? normalFormClass : (checkPassword === false ? errorFormClass : validFormClass)}>
                     <label>Password</label>
                     <input type="password" placeholder="Your password" value={loginInputPassword} 
                         onChange={(event) => setLoginInputPassword(event.target.value)} />
+                    <FontAwesomeIcon class="exclamation-circle" icon='exclamation-circle'/>
                     <small>{passwordErrorMsg}</small>
                 </div>
                 <div className="button-container">

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Signup = ({formDisplayFunction, formDisplay}) => {
     let [signupInputUsername, setSignupInputUsername] = useState('');
@@ -99,18 +100,24 @@ const Signup = ({formDisplayFunction, formDisplay}) => {
                     <label>Username</label>
                     <input type="text" placeholder="Your username" value={signupInputUsername} 
                             onChange={(event) => setSignupInputUsername(event.target.value)} />
+                    <FontAwesomeIcon class="check-circle" icon='check-circle'/>
+                    <FontAwesomeIcon class="exclamation-circle" icon='exclamation-circle'/>
                     <small>{usernameErrorMsg}</small>
                 </div>
                 <div className={checkPassword === '' ? normalFormClass : (checkPassword === false ? errorFormClass : validFormClass)}>
                     <label>Password</label>
                     <input type="password" placeholder="Your chosen password" value={signupInputPassword} 
                             onChange={(event) => setSignupInputPassword(event.target.value)} />
+                    <FontAwesomeIcon class="check-circle" icon='check-circle'/>
+                    <FontAwesomeIcon class="exclamation-circle" icon='exclamation-circle'/>
                     <small>{passwordErrorMsg}</small>
                 </div>
                 <div className={checkPassword2 === '' ? normalFormClass : (checkPassword2 === false ? errorFormClass : validFormClass)}>
                     <label>Verify password</label>
                     <input type="password" placeholder="Retype your password" value={signupInputRetypePassword} 
                             onChange={(event) => setSignupInputRetypePassword(event.target.value)} />
+                    <FontAwesomeIcon class="check-circle" icon='check-circle'/>
+                    <FontAwesomeIcon class="exclamation-circle" icon='exclamation-circle'/>
                     <small>{password2ErrorMsg}</small>
                 </div>
 
