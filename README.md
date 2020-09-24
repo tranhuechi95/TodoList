@@ -76,4 +76,6 @@ c) For login, I checked whether the username provided already exists in db. If i
   
   g) For `display: grid`, to make each column/row has its own height/width, set `margin: auto`.
   
-  e) Do not overset the properties of parents and children containers. This practice will complicate debugging of style.
+  e) For Font Awesone icons, follow instructions at https://fontawesome.com/how-to-use/on-the-web/using-with/react, default free icons are `solid`. `size` property does not work. The work-around way is to style normally with css and set `height` or `width` for size. Use `position: absolute` for the icons and `position: relative` for parent container.
+  
+  f) Do not overset the properties of parents and children containers. This practice will complicate debugging of style.
