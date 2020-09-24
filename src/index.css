@@ -280,4 +280,10 @@ body {
     width: 250px;
     overflow-wrap: break-word;
     text-align: center;
+    cursor: pointer;
+}
+
+.single-item-container.done {
+    text-decoration: line-through;
+    color: gray;
 }

@@ -1,6 +1,8 @@
 import React from 'react';
+import SingleItem from './SingleItem';
 
 const TodoList = ({list}) => {
+
     return (
         <div className="main-container-left">
             <header className="header">
@@ -10,13 +12,13 @@ const TodoList = ({list}) => {
                 { list.length !== 0 && list[0].todoContent !== undefined
                     ? list.map(singleTodo => {
                     return (
-                        <div className="single-item-container">{singleTodo.todoContent}</div>
+                        <SingleItem info={singleTodo} key={singleTodo.todoId}/>
                     )})
                     : <div className="single-item-container">Nothing yet!</div>
                 }
             </div>
-        </div>
-    )  
+        </div>   
+    )
 }
 
 export default TodoList;
